@@ -12,7 +12,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.feature_selection import SelectKBest, mutual_info_regression
 #CARGAR DATOS Y EDA 
 
 #Importar el csv:
@@ -67,15 +68,37 @@ X_train_sel.head()
 
 X_test_sel.head()
 
+
+# Visualización de regresión
+fig, axis = plt.subplots(2, 2, figsize=(14, 12))
+
+sns.regplot(x=df_escalado['age'], y=df_escalado['charges'], ax=axis[0, 0])
+axis[0, 0].set_title('Regresión: Edad vs. Cargos')
+
+sns.regplot(x=df_escalado['bmi'], y=df_escalado['charges'], ax=axis[0, 1])
+axis[0, 1].set_title('Regresión: BMI vs. Cargos')
+
+sns.regplot(x=df_escalado['children'], y=df_escalado['charges'], ax=axis[1, 0])
+axis[1, 0].set_title('Regresión: Hijos vs. Cargos')
+
+sns.regplot(x=df_escalado['smoker'], y=df_escalado['charges'], ax=axis[1, 1])
+axis[1, 1].set_title('Regresión: Fumador vs. Cargos')
+
+plt.tight_layout()
+plt.show()
+
 model = LinearRegression()
 model.fit(X_train_sel, y_train)
 
 y_pred = model.predict(X_test_sel)
 
 mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 print(f"MSE: {mse:.6f}")
+print(f"R2: {r2:.4f}")
 
-#El MSE es bastante bueno
+#Los valores de R2 y de MSE son buenos y no hace falta optimizar el modelo
+
 
 #Resumen de correlación de datos
 X = df.drop(["charges", "region_northeast"], axis=1)
